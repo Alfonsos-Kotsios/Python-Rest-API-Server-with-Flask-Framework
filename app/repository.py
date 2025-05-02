@@ -41,20 +41,16 @@ class Repository:
     
 
     
-    def search_questionnaires(self, min_answers:int, max_answers:int, title=None, student_name=None, department=None ,sort_by_answer_count=False, descending=True):
+    def search_questionnaires(self, min_answers=None, max_answers=None, title=None, student_name=None, department=None,sort_by_answer_count=False, descending=True):
         query = {}
 
-        if min_answers  or max_answers :
+        if min_answers or max_answers:
             query["answer_count"] = {}
             if min_answers:
-                 min_answers = int(min_answers)
-                 if min_answers >= 0:
-                     query["answer_count"]["$gte"] = min_answers
+                query["answer_count"]["$gte"] = int(min_answers)
             if max_answers:
-                max_answers = int(max_answers)
-                if max_answers >= 0:
-                    query["answer_count"]["$lte"] = max_answers
-        
+                query["answer_count"]["$lte"] = int(max_answers)
+
         if title:
             query["title"] = {"$regex": title, "$options": "i"}
 
@@ -68,17 +64,16 @@ class Repository:
             if department:
                 student_filter["department"] = {"$regex": department, "$options": "i"}
 
-            matched_students = list(self.db["Students"].find(student_filter))
-            reg_numbers = [s["reg_number"] for s in matched_students]
+            matched = list(self.db["Students"].find(student_filter))
+            reg_numbers = [s["reg_number"] for s in matched]
             query["student_id"] = {"$in": reg_numbers}
 
-
-        # Ανάκτηση ερωτηματολογίων με ταξινόμηση από Mongo
         cursor = self.db["Questionnaires"].find(query)
 
         if sort_by_answer_count:
-            order = pymongo.DESCENDING if descending else pymongo.ASCENDING
-            cursor = cursor.sort("answer_count", order)
+            sort_order = pymongo.DESCENDING if descending else pymongo.ASCENDING
+            cursor = cursor.sort("answer_count", sort_order)
 
-        return [Questionnaire.from_dict(r) for r in cursor]
-  
+        return [Questionnaire.from_dict(q) for q in cursor]
+
+    

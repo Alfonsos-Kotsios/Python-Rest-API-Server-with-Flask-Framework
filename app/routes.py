@@ -25,7 +25,6 @@ def get_questionnaires():
     
 
     return render_template("questionnaires.html", questionnaires=questionnaires, students=students)
-
 @server.route("/questionnaires/search")
 def search_questionnaires():
     students = rep.get_Students()
@@ -36,22 +35,22 @@ def search_questionnaires():
     department = request.args.get("department")
     sort = request.args.get("sort")
 
-    
+    sort_flag = sort in ["answer_count", "answer_count_desc"]
+    descending = (sort == "answer_count")  # descending=True only if sort=answer_count
 
     results = rep.search_questionnaires(
-       min_answers=min_answers,
-       max_answers=max_answers, 
-       title=title,
-       student_name=student_name,
-       department=department,
+        min_answers=min_answers,
+        max_answers=max_answers,
+        title=title,
+        student_name=student_name,
+        department=department,
+        sort_by_answer_count=sort_flag,
+        descending=descending
     )
 
-    if sort == "answer_count":
-        results = sorted(results, key=lambda q: q.answer_count, reverse=True)
-    if sort == "answer_count_desc":
-        results = sorted(results, key=lambda q: q.answer_count, reverse=False)
-
+    
     return render_template("search_results.html", questionnaires=results, students=students)
+
 
 @server.route('/questionnaire/<int:questionnaire_id>')
 def view_questionnaire(questionnaire_id):
@@ -106,3 +105,7 @@ def submit_questionnaire(questionnaire_id):
     )
 
     return render_template("success.html", message="Η απάντηση καταχωρήθηκε με επιτυχία!")
+
+@server.route('/login')
+def login():
+    return render_template('login.html')

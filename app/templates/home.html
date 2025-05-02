@@ -1,13 +1,19 @@
-<!-- app/templates/index.html -->
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <title>UniQ Ερωτηματολόγια</title>
-   
+  <meta charset="UTF-8">
+  <title>UniQ </title>
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
-<body>
-   
-   <p>poutsa</p>
+<body class="body">
+  <nav class="navbar">
+    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+    <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος στο Σύστημα</a>
+  </nav>
+
+  <main class="main">
+    <h1 class="main-title">Καλώς Ήρθατε στο UniQ</h1>
+    <p class="main-text">Σε αυτή την σελίδα μπορείτε να δείτε & να απαντήσετε σε ερωτηματολόγια από φοιτητές του Πανεπειστμίου Πειραιώς!</p>
+  </main>
 </body>
 </html>

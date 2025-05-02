@@ -1,55 +1,57 @@
-<!-- templates/questionnaires.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Ερωτηματολόγια</title>
+  <title>UniQ | Ερωτηματολόγια</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaires.css') }}">
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
-<body>
-  <h1>Διαθέσιμα Ερωτηματολόγια</h1>
+<body class="body">
 
-  <a href="{{ url_for('get_questionnaires', sort='answer_count') }}">Ταξινόμηση κατά απαντήσεις φθινουσα</a>
-  <a href="{{ url_for('get_questionnaires', sort='answer_count_desc') }}">Ταξινόμηση κατά απαντήσεις αυξουσα</a><br>
+  <nav class="navbar">
+    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+    <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+  </nav>
 
-  <form method="get" action="{{ url_for('search_questionnaires') }}">
-    <label for="title">Τίτλος:</label>
-    <input type="text" name="title" value="{{ request.args.get('title', '') }}">
-  
-    <label for="min_answers">Ελάχιστες Απαντήσεις:</label>
-    <input type="number" name="min_answers" value="{{ request.args.get('min_answers', '') }}">
-  
-    <label for="max_answers">Μέγιστες Απαντήσεις:</label>
-    <input type="number" name="max_answers" value="{{ request.args.get('max_answers', '') }}">
-  
-    <label for="student_name">Όνομα Φοιτητή:</label>
-    <input type="text" name="student_name" value="{{ request.args.get('student_name', '') }}">
-  
-    <label for="department">Τμήμα:</label>
-    <input type="text" name="department" value="{{ request.args.get('department', '') }}">
-  
-    
-    
-  
-    <button type="submit">🔍 Αναζήτηση</button>
-  </form>
-  <ul>
-    {% for q in questionnaires %}
-      <li>
-        <strong>{{ q.title }}</strong><br>
-        {{ q.description }}<br>
-        {%for s in students if s.reg_number == q.student_id %}
-          Ονομα:{{s.name}}<br>
-          Επιθετός:{{s.surname}}<br>
-          Τμήμα:{{ s.department }}<br>
-        {% endfor %}
-        Απαντήσεις: {{ q.answer_count }}<br>
-        <a href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή</a>
-      </li>
-    {% else %}
-      <li>Δεν βρέθηκαν ερωτηματολόγια</li>
-    {% endfor %}
-  </ul>
+  <div class="container">
+    <h1 class="heading">Διαθέσιμα Ερωτηματολόγια</h1>
+
+    <div class="sort-section">
+      <p>Ταξινόμηση με βάση το πλήθος απαντήσεων:</p>
+      <a class="sort-link" href="{{ url_for('get_questionnaires', sort='answer_count') }}">⬇️ Φθίνουσα</a>
+      <a class="sort-link" href="{{ url_for('get_questionnaires', sort='answer_count_desc') }}"> ⬆️ Αύξουσα</a>
+    </div>
+
+    <form class="search-form" method="get" action="{{ url_for('search_questionnaires') }}">
+      <input type="text" name="title" placeholder="Τίτλος" value="{{ request.args.get('title', '') }}">
+      <input type="number" name="min_answers" placeholder="Ελάχιστες Απαντήσεις" value="{{ request.args.get('min_answers', '') }}">
+      <input type="number" name="max_answers" placeholder="Μέγιστες Απαντήσεις" value="{{ request.args.get('max_answers', '') }}">
+      <input type="text" name="student_name" placeholder="Όνομα Φοιτητή" value="{{ request.args.get('student_name', '') }}">
+      <input type="text" name="department" placeholder="Τμήμα" value="{{ request.args.get('department', '') }}">
+      <button type="submit">🔍 Αναζήτηση</button>
+    </form>
+
+    <div class="questionnaire-list">
+      {% for q in questionnaires %}
+        <div class="questionnaire-card">
+          <h2 class="questionnaire-title">{{ q.title }}</h2>
+          <p>{{ q.description }}</p>
+          {% for s in students if s.reg_number == q.student_id %}
+            <p><strong>Ονομα:</strong> {{ s.name }}</p>
+            <p><strong>Επώνυμο:</strong> {{ s.surname }}</p>
+            <p><strong>Τμήμα:</strong> {{ s.department }}</p>
+          {% endfor %}
+          <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
+          <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
+        </div>
+      {% else %}
+        <p>Δεν βρέθηκαν ερωτηματολόγια.</p>
+      {% endfor %}
+    </div>
+  </div>
 </body>
 </html>
+
 
 

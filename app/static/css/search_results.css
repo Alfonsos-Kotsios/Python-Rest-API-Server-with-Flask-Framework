@@ -1,0 +1,76 @@
+
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.heading {
+  text-align: center;
+  color: #004080;
+  margin-bottom: 2rem;
+}
+
+.sort-section {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.sort-link {
+  margin-left: 1rem;
+  font-weight: bold;
+  color: #004080;
+  text-decoration: none;
+}
+
+.sort-link:hover {
+  text-decoration: underline;
+}
+
+.questionnaire-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.questionnaire-card {
+  background-color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.questionnaire-title {
+  margin-top: 0;
+  color: #004080;
+}
+
+.view-button {
+  display: inline-block;
+  background-color: #004080;
+  color: white;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.view-button:hover {
+  background-color: #0066cc;
+}
+
+.no-results {
+  text-align: center;
+  color: #888;
+  margin-top: 2rem;
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 2rem;
+  text-decoration: none;
+  color: #004080;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: bold;
+}

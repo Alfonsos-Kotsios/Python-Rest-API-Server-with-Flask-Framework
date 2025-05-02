@@ -1,38 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Αποτελέσματα Αναζήτησης</title>
+  <title>UniQ | Αποτελέσματα Αναζήτησης</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/search_results.css') }}">
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
-<body>
-  <h1>Αποτελέσματα Αναζήτησης Ερωτηματολογίων</h1>
+<body class="body">
 
-  <p>
+  <nav class="navbar">
+    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Ερωτηματολόγια</a>
+    <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+  </nav>
+
+  <div class="container">
+    <h1 class="heading">Αποτελέσματα Αναζήτησης Ερωτηματολογίων</h1>
+
     {% if questionnaires|length > 0 %}
-      Βρέθηκαν {{ questionnaires|length }} αποτελέσματα.
-      <a href="{{ url_for('search_questionnaires', sort='answer_count') }}">Ταξινόμηση κατά απαντήσεις φθινουσα</a>
-      <a href="{{ url_for('search_questionnaires', sort='answer_count_desc') }}">Ταξινόμηση κατά απαντήσεις αυξουσα</a><br>
+      <p>Βρέθηκαν {{ questionnaires|length }} αποτελέσματα.</p>
+
+      <div class="sort-section">
+        <span>Ταξινόμηση με βάση πλήθος απαντήσεων:</span>
+        <a class="sort-link" href="{{ url_for('search_questionnaires',
+                    title=request.args.get('title'),
+                    min_answers=request.args.get('min_answers'),
+                    max_answers=request.args.get('max_answers'),
+                    student_name=request.args.get('student_name'),
+                    department=request.args.get('department'),
+                    sort='answer_count') }}">⬇️ Φθίνουσα</a>
+        <a class="sort-link" href="{{ url_for('search_questionnaires',
+                    title=request.args.get('title'),
+                    min_answers=request.args.get('min_answers'),
+                    max_answers=request.args.get('max_answers'),
+                    student_name=request.args.get('student_name'),
+                    department=request.args.get('department'),
+                    sort='answer_count_desc') }}">⬆️ Αύξουσα</a>
+      </div>
     {% else %}
-      Δεν βρέθηκαν αποτελέσματα για τα επιλεγμένα φίλτρα.
+      <p class="no-results">Δεν βρέθηκαν αποτελέσματα για τα φίλτρα που δώσατε.</p>
     {% endif %}
-  </p>
 
-  <ul>
-    {% for q in questionnaires %}
-      <li>
-        <strong>{{ q.title }}</strong><br>
-        {{ q.description }}<br>
-        {%for s in students if s.reg_number == q.student_id %}
-          Ονομα:{{s.name}}<br>
-          Επιθετός:{{s.surname}}<br>
-          Τμήμα:{{ s.department }}<br>
-        {% endfor %}
-        Απαντήσεις: {{ q.answer_count }}<br>
-        <a href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή</a>
-      </li>
-    {% endfor %}
-  </ul>
+    <div class="back-link">
+      <a href="{{ url_for('get_questionnaires') }}">🔙 Επιστροφή στα Ερωτηματολόγια</a>
+    </div>
 
-  <a href="{{ url_for('get_questionnaires') }}">⬅ Επιστροφή σε όλα τα ερωτηματολόγια</a>
+    <div class="questionnaire-list">
+      {% for q in questionnaires %}
+        <div class="questionnaire-card">
+          <h2 class="questionnaire-title">{{ q.title }}</h2>
+          <p>{{ q.description }}</p>
+          {% for s in students if s.reg_number == q.student_id %}
+            <p><strong>Όνομα:</strong> {{ s.name }}</p>
+            <p><strong>Επώνυμο:</strong> {{ s.surname }}</p>
+            <p><strong>Τμήμα:</strong> {{ s.department }}</p>
+          {% endfor %}
+          <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
+          <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
+        </div>
+      {% endfor %}
+    </div>
+
+   
+  </div>
+
 </body>
 </html>

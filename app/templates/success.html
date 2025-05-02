@@ -3,10 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Επιτυχία</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
-<body>
-  <h1>✅ Επιτυχής Υποβολή</h1>
-  <p>{{ message }}</p>
-  <a href="{{ url_for('get_questionnaires') }}">⬅ Επιστροφή στα ερωτηματολόγια</a>
+<body class="body">
+
+  <nav class="navbar">
+    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Ερωτηματολόγια</a>
+    <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+  </nav>
+
+  <div class="success-container">
+    <h1 class="success-title">✅ Επιτυχής Υποβολή</h1>
+    <p class="success-message">{{ message }}</p>
+    <a class="back-link" href="{{ url_for('get_questionnaires') }}">⬅ Επιστροφή στα ερωτηματολόγια</a>
+  </div>
+
 </body>
 </html>
