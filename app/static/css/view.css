@@ -1,55 +1,65 @@
 
+
 .container {
-  max-width: 1000px;
-  margin: auto;
-}
-
-.heading {
-  text-align: center;
-  color: #004080;
-  margin-bottom: 2rem;
-}
-
-.questionnaire-card {
-  background-color: white;
-  padding: 1.5rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  
+}
+
+.questionnaire-title {
+  color: #003366;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.questionnaire-meta {
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.question-block {
   margin-bottom: 1.5rem;
 }
 
-.questionnaire-card p {
-  margin: 0.5rem 0;
-  color: #333;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.question-block p {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 input[type="text"],
 input[type="number"] {
+  width: 50%;
   padding: 0.5rem;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 400px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-top: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 button[type="submit"] {
-  align-self: flex-start;
-  color: white;
-  background-color: #004080;
-  padding: 0.5rem 1.2rem;
+  background-color: #003366;
+  color: #fff;
   border: none;
-  border-radius: 5px;
-  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s;
+  
 }
 
 button[type="submit"]:hover {
-  background-color: #0066cc;
+  background-color: #0055aa;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
