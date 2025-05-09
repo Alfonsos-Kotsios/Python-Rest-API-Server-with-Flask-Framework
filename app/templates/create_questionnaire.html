@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Δημιουργία Ερωτηματολογίου</title>
+ 
+</head>
+<body class="body">
+  <nav class="navbar">
+    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Ερωτηματολόγια</a>
+  </nav>
+
+  <div class="container">
+    <h1 class="questionnaire-title">📝 Δημιουργία Νέου Ερωτηματολογίου</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for message in messages %}
+            <li class="flash-msg">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+      <div class="question-block">
+        <label for="title">Τίτλος:</label>
+        <input type="text" name="title" required>
+      </div>
+
+      <div class="question-block">
+        <label for="description">Περιγραφή:</label>
+        <input type="text" name="description" required>
+      </div>
+
+      <div class="question-block">
+        <label for="num_questions">Πλήθος Ερωτήσεων:</label>
+        <input type="number" name="num_questions" min="1" max="10" required>
+      </div>
+
+      <div id="questions-area"></div>
+
+      <button type="button" onclick="generateQuestions()">➕ Προσθήκη Ερωτήσεων</button>
+      <button type="submit">✅ Καταχώρηση</button>
+    </form>
+  </div>
+
+  <script>
+    function generateQuestions() {
+      const count = parseInt(document.querySelector('[name="num_questions"]').value || 0);
+      const area = document.getElementById("questions-area");
+      area.innerHTML = "";
+      for (let i = 1; i <= count; i++) {
+        area.innerHTML += `
+          <div class="question-block">
+            <label>Ερώτηση ${i}</label><br>
+            <select name="type_${i}" required>
+              <option value="Numeric">Αριθμητική</option>
+              <option value="Open Ended">Ανοικτού Τύπου</option>
+            </select>
+            <input type="text" name="text_${i}" placeholder="Περιγραφή" required>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

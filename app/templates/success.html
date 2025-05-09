@@ -10,8 +10,16 @@
 
   <nav class="navbar">
     <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
-    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Ερωτηματολόγια</a>
-    <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+    {% if session.username %}
+      <span class="nav-user">👤 {{ session.username }}</span>
+      <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
+      <a class="nav-link">🔑Αλλαγή Κωδικού</a>
+      <a class="nav-link" >🛠️ Κατασκευη Ερωτηματολογίου</a>
+      <a class="nav-link" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
+    {% else %}
+      <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    {% endif %}
   </nav>
 
   <div class="success-container">

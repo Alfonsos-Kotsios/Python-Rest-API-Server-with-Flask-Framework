@@ -5,6 +5,14 @@
   <title>UniQ | Ερωτηματολόγια</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaires.css') }}">
   <link rel="stylesheet" href="../static/css/home.css">
+  
+  <script>
+    function confirmDelete(formId) {
+      if (confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις το ερωτηματολόγιο;")) {
+        document.getElementById(formId).submit();
+      }
+    }
+  </script>
 </head>
 <body class="body">
 
@@ -23,23 +31,7 @@
   </nav>
 
   <div class="container">
-    <h1 class="heading">Διαθέσιμα Ερωτηματολόγια</h1>
-
-    <div class="sort-section">
-      <p>Ταξινόμηση με βάση το πλήθος απαντήσεων:</p>
-      <a class="sort-link" href="{{ url_for('get_questionnaires', sort='answer_count') }}">⬇️ Φθίνουσα</a>
-      <a class="sort-link" href="{{ url_for('get_questionnaires', sort='answer_count_desc') }}"> ⬆️ Αύξουσα</a>
-    </div>
-
-    <form class="search-form" method="get" action="{{ url_for('search_questionnaires') }}">
-      <input type="text" name="title" placeholder="Τίτλος" value="{{ request.args.get('title', '') }}">
-      <input type="number" name="min_answers" placeholder="Ελάχιστες Απαντήσεις" value="{{ request.args.get('min_answers', '') }}">
-      <input type="number" name="max_answers" placeholder="Μέγιστες Απαντήσεις" value="{{ request.args.get('max_answers', '') }}">
-      <input type="text" name="student_name" placeholder="Όνομα Φοιτητή" value="{{ request.args.get('student_name', '') }}">
-      <input type="text" name="department" placeholder="Τμήμα" value="{{ request.args.get('department', '') }}">
-      <button type="submit">🔍 Αναζήτηση</button>
-    </form>
-
+    <h1 class="heading">Τα Ερωτηματολόγια του {{session.username}}</h1>
     <div class="questionnaire-list">
       {% for q in questionnaires %}
         <div class="questionnaire-card">
@@ -51,13 +43,20 @@
             <p><strong>Τμήμα:</strong> {{ s.department }}</p>
           {% endfor %}
           <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
+          <p><strong>Url:</strong>{{q.unique_url}}</p>
+
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
+          <a class="view-button" href="{{ url_for('edit_questionnaire_title', questionnaire_id=q.questionnaire_id) }}">Αλλαγή Τίτλου ➡</a>
+          <a href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
+          
+          
         </div>
       {% else %}
         <p>Δεν βρέθηκαν ερωτηματολόγια.</p>
       {% endfor %}
     </div>
   </div>
+
 </body>
 </html>
 

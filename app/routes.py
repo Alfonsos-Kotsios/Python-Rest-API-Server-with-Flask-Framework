@@ -17,6 +17,7 @@ def get_questionnaires():
     sort1 = request.args.get("sort")
     questionnaires = rep.get_questionnaires()
     students = rep.get_Students()
+    
 
     if sort1 == "answer_count":
         questionnaires = sorted(questionnaires, key=lambda q: q.answer_count, reverse=True)
@@ -106,6 +107,3 @@ def submit_questionnaire(questionnaire_id):
 
     return render_template("success.html", message="Η απάντηση καταχωρήθηκε με επιτυχία!")
 
-@server.route('/login')
-def login():
-    return render_template('login.html')

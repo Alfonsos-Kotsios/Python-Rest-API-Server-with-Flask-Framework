@@ -8,12 +8,25 @@
 <body class="body">
   <nav class="navbar">
     <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
-    <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    {% if session.username %}
+      <span class="nav-user">👤 {{ session.username }}</span>
+      <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
+      <a class="nav-link" href="{{ url_for('change_password') }}">🔑Αλλαγή Κωδικού</a>
+      <a class="nav-link" href="{{ url_for('create_questionnaire') }}">🛠️ Κατασκευη Ερωτηματολογίου</a>
+      <a class="nav-link" href="{{ url_for('my_questionnaires') }}" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
+    {% else %}
+      <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    {% endif %}
   </nav>
 
   <main class="main">
+    {% if session.username %}
+      <h1 class="main-title">Καλώς Ήρθατε, {{ session.username }}!</h1>
+      <p class="main-text">Σε αυτη την σελίδα μπορείτε να επεξεργαστείτε τα ερωτηματολόγια σας !</p>
+    {% else %}
     <h1 class="main-title">Καλώς Ήρθατε στο UniQ</h1>
     <p class="main-text">Σε αυτή την σελίδα μπορείτε να δείτε & να απαντήσετε σε ερωτηματολόγια από φοιτητές του Πανεπειστμίου Πειραιώς!</p>
+    {% endif %}
   </main>
 </body>
 </html>

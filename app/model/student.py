@@ -35,12 +35,13 @@ class Student:
     @staticmethod
     def from_dict(data):
         student = Student(
-            username=data.get("username"),
-            password=data.get("password"),
-            reg_number=data.get("reg_number"),
-            department=data.get("department"),
-            name=data.get("name"),
-            surname=data.get("surname")
+            username=data["username"],
+            password=data["password"],
+            name=data["name"],
+            surname=data["surname"],
+            reg_number=data["reg_number"],
+            department=data["department"]
         )
+       
         student.id = data.get("id", student.id)
         return student
