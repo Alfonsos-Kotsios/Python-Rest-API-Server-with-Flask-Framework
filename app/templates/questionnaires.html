@@ -9,16 +9,20 @@
 <body class="body">
 
   <nav class="navbar">
-    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
-    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+     <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+     <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
     {% if session.username %}
       <span class="nav-user">👤 {{ session.username }}</span>
       <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
       <a class="nav-link" href="{{ url_for('change_password') }}">🔑Αλλαγή Κωδικού</a>
-      <a class="nav-link" >🛠️ Κατασκευη Ερωτηματολογίου</a>
-      <a class="nav-link" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
+      <a class="nav-link" href="{{ url_for('create_questionnaire') }}">🛠️ Κατασκευη Ερωτηματολογίου</a>
+      <a class="nav-link" href="{{ url_for('my_questionnaires') }}" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
     {% else %}
       <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    {% endif %}
+    {% if  session.username and session.role == 'admin'%}
+      <a class="nav-link" href="{{ url_for('create_student') }}">➕ Δημιουργία Νέου Φοιτητή</a>
+      <a class="nav-link" href="{{ url_for('delete_student') }}">🗑️ Διαγραφή Φοιτητή</a>
     {% endif %}
   </nav>
 
@@ -52,6 +56,9 @@
           {% endfor %}
           <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
+          {% if session.role == 'admin' %}
+            <a class="view-button" href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
+          {% endif %}
         </div>
       {% else %}
         <p>Δεν βρέθηκαν ερωτηματολόγια.</p>

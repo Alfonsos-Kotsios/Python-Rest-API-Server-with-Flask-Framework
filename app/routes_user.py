@@ -1,12 +1,15 @@
 from flask import request
+import pymongo
 from app import server
 from app.repository import Repository
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from pymongo import MongoClient
-
+from populate_db import main
 rep = Repository.instance()
 server.secret_key = 'a_random_key'  # Needed to use sessions
 
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client.UniQ
 
 
 @server.route('/login', methods=['GET', 'POST'])
@@ -28,8 +31,8 @@ def login():
 
 @server.route('/logout')
 def logout():
-    # Remove the username from the session if it's there
     session.pop('username', None)
+    session.pop('role', None)
     return redirect(url_for('login'))
 
 @server.route('/change_password', methods=['GET', 'POST'])
@@ -77,12 +80,18 @@ def edit_questionnaire_title(questionnaire_id):
     
     error = None
     success = None
-    print("questionnaire_id", questionnaire_id)
+    print("questionnaire_id", type(questionnaire_id))
+
 
     if request.method == 'POST':
         new_title = request.form.get("new_title")
         if new_title:
-            rep.update_questionnaire_title(questionnaire_id, new_title)
+            # Update the questionnaire title in the database
+            result = rep.update_questionnaire_title(questionnaire_id, new_title)
+            print("result", result)
+            if result:
+                success = "✅ Ο τίτλος του ερωτηματολογίου άλλαξε επιτυχώς!"
+                
         else:
             error = "Σφάλμα στην εισαγωγή Τίτλου"
         print("new_title", new_title)
@@ -95,7 +104,9 @@ def create_questionnaire():
         return redirect(url_for('login'))
 
     student = rep.get_student_by_username(session['username'])
-    print("student", student) ## Debugging line
+    error = None
+    success = None
+    
 
     if request.method == "POST":
         title = request.form.get("title")
@@ -126,13 +137,11 @@ def create_questionnaire():
         }
 
         if rep.create_questionnaire(questionnaire):
-            flash("✅ Το ερωτηματολόγιο δημιουργήθηκε επιτυχώς!")
-            return redirect(url_for('view_questionnaire', questionnaire_id=questionnaire_id))
+            success = "✅ Το ερωτηματολόγιο δημιουργήθηκε επιτυχώς!"
         else:
-            error = "Αποτυχία κατασκευής"
-            return render_template("create_questionnaire.html", error=error)
+            error = "❌ Αποτυχία κατασκευής"
 
-    return render_template("create_questionnaire.html")
+    return render_template("create_questionnaire.html" , error=error, success=success)
 
 @server.route("/questionnaire/<questionnaire_id>/delete" )
 def delete_questionnaire(questionnaire_id):
@@ -144,4 +153,12 @@ def delete_questionnaire(questionnaire_id):
         
         return "Error deleting questionnaire", 500
    
+@server.route("/questionnaire/<int:questionnaire_id>/answers")
+def view_answers(questionnaire_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+    
+
+    stats = rep.get_questionnaire_answers(questionnaire_id)
+    return render_template("questionnaire_answers.html", stats=stats, questionnaire_id=questionnaire_id)
 

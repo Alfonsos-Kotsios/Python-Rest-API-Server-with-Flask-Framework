@@ -1,13 +1,17 @@
+
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>UniQ </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniQ</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/create_student.css') }}">
   <link rel="stylesheet" href="../static/css/home.css">
 </head>
 <body class="body">
-  <nav class="navbar">
-    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+   <nav class="navbar">
+     <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+     <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
     {% if session.username %}
       <span class="nav-user">👤 {{ session.username }}</span>
       <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
@@ -22,15 +26,22 @@
       <a class="nav-link" href="{{ url_for('delete_student') }}">🗑️ Διαγραφή Φοιτητή</a>
     {% endif %}
   </nav>
+  <div class="container">
+    <h2>🗑️ Διαγραφή Φοιτητή</h2>
 
-  <main class="main">
-    {% if session.username %}
-      <h1 class="main-title">Καλώς Ήρθατε, {{ session.username }}!</h1>
-      <p class="main-text">Σε αυτη την σελίδα μπορείτε να επεξεργαστείτε τα ερωτηματολόγια σας !</p>
-    {% else %}
-    <h1 class="main-title">Καλώς Ήρθατε στο UniQ</h1>
-    <p class="main-text">Σε αυτή την σελίδα μπορείτε να δείτε & να απαντήσετε σε ερωτηματολόγια από φοιτητές του Πανεπειστμίου Πειραιώς!</p>
+    {% if error %}
+      <p style="color:red;">{{ error }}</p>
+    {% elif success %}
+      <p style="color:green;">{{ success }}</p>
     {% endif %}
-  </main>
+
+    <form method="POST"  class="form">
+      <div class="student-block">
+        <label>Αριθμός Μητρώου:</label>
+        <input type="number" name="reg_number" required>
+      </div>
+      <button type="submit">Διαγραφή</button>
+    </form>
+  </div>
 </body>
 </html>

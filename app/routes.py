@@ -5,11 +5,13 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from pymongo import MongoClient
 
 rep = Repository.instance()
-
+server.secret_key = 'a_random_key'  # Needed to use sessions
 
 
 @server.route('/')
 def home():
+   
+    print("session", session)
     return render_template('home.html')
 
 @server.route('/questionnaires', )
@@ -83,27 +85,35 @@ def submit_questionnaire(questionnaire_id):
                 return render_template("error.html", message=f"Μη έγκυρη αριθμητική τιμή για την ερώτηση {question['question_num']}."), 400
         else:
             content = raw_value.strip()
-
+        
         answers.append({
             "question_num": question["question_num"],
             "content": content
         })
 
-    # Δημιουργία answered_questionnaire
+    # Χωρίς login -> ελέγχει αν είναι student μέσω session (αν υπάρχει), αλλιώς False
+    if session.get("role") == "student":
+        from_student = True
+        print("session", session)
+    else:
+        from_student = False
+        print("session", session)
+
+    print("from_student", from_student)
+
     answered_doc = {
         "questionnaire_id": questionnaire_id,
-        "from_student": False,  # Σε επόμενο βήμα μπορεί να γίνει δυναμικό
+        "from_student": from_student,
         "answers": answers
     }
 
-    # Αποθήκευση απάντησης
     rep.db["Answered_questionnaires"].insert_one(answered_doc)
 
-    # Ενημέρωση counter
     rep.db["Questionnaires"].update_one(
         {"questionnaire_id": questionnaire_id},
         {"$inc": {"answer_count": 1}}
     )
 
     return render_template("success.html", message="Η απάντηση καταχωρήθηκε με επιτυχία!")
+
 

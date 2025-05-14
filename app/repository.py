@@ -106,13 +106,18 @@ class Repository:
         
         return [Questionnaire.from_dict(questionnaire) for questionnaire in questionnaires]
     
-    def update_questionnaire_title(self, questionnaire_id: str, new_title: str) -> bool:
+    def update_questionnaire_title(self, questionnaire_id: int, new_title: str) -> bool:
         result = self.db["Questionnaires"].update_one(
-            {"questionnaire_id": questionnaire_id},
-            {"$set": {"description": new_title}}
+            {"questionnaire_id": int(questionnaire_id)},
+            {"$set": {"title": new_title}}
         )
         return result.modified_count > 0
     
+    def delete_questionnaire_and_answers(self, questionnaire_id: int) -> bool:
+        self.db["AnsweredQuestionnaires"].delete_many({"questionnaire_id": int(questionnaire_id)})
+        result = self.db["Questionnaires"].delete_one({"questionnaire_id": int(questionnaire_id)})
+        return result.deleted_count > 0
+        
     def create_questionnaire(self, questionnaire_data: dict) -> bool:
         try:
             self.db["Questionnaires"].insert_one(questionnaire_data)
@@ -127,4 +132,50 @@ class Repository:
             return doc["questionnaire_id"] + 1
         return 1  
     
-   
+    def get_questionnaire_answers(self, questionnaire_id: int) -> dict:
+        answered = list(self.db["Answered_questionnaires"].find({"questionnaire_id": questionnaire_id}))
+
+        total = len(answered)
+        students = sum(1 for a in answered if a["from_student"])
+        users = total - students
+        percent_users = (users / total * 100) if total > 0 else 0
+
+        return {
+            "total": total,
+            "student_answers": students,
+            "user_answers": users,
+            "user_percentage": round(percent_users, 2),
+            "answers": [AnsweredQuestionnaire.from_dict(a) for a in answered]
+        }
+    
+    def create_student(self, student_data: dict) -> bool:
+        if self.db["Students"].find_one({"username": student_data["username"]}):
+            return False  # Username already exists
+
+        self.db["Students"].insert_one(student_data)
+
+        self.db["Users"].insert_one({
+            "id": student_data["id"],
+            "username": student_data["username"],
+            "password": student_data["password"],
+            "type": "student"
+        })
+
+        return True
+    
+    def delete_student_by_reg_number(self, reg_number: int) -> bool:
+        student = self.db["Students"].find_one({"reg_number": reg_number})
+        if not student:
+            return False
+
+        username = student["username"]
+        questionnaire = list(self.db["Questionnaires"].find({"student_id": reg_number}))
+
+        self.db["Students"].delete_one({"reg_number": reg_number})
+        self.db["Users"].delete_one({"username": username})
+        self.db["Questionnaires"].delete_many({"student_id": reg_number})
+
+        for q in questionnaire:
+            self.db["Answered_questionnaires"].delete_many({"questionnaire_id": q["questionnaire_id"]})  
+        return True
+    

@@ -5,28 +5,24 @@
   <title>UniQ | Ερωτηματολόγια</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaires.css') }}">
   <link rel="stylesheet" href="../static/css/home.css">
-  
-  <script>
-    function confirmDelete(formId) {
-      if (confirm("Είσαι σίγουρος ότι θέλεις να διαγράψεις το ερωτηματολόγιο;")) {
-        document.getElementById(formId).submit();
-      }
-    }
-  </script>
 </head>
 <body class="body">
 
   <nav class="navbar">
-    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
-    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+     <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+     <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
     {% if session.username %}
       <span class="nav-user">👤 {{ session.username }}</span>
       <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
       <a class="nav-link" href="{{ url_for('change_password') }}">🔑Αλλαγή Κωδικού</a>
-      <a class="nav-link" >🛠️ Κατασκευη Ερωτηματολογίου</a>
-      <a class="nav-link" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
+      <a class="nav-link" href="{{ url_for('create_questionnaire') }}">🛠️ Κατασκευη Ερωτηματολογίου</a>
+      <a class="nav-link" href="{{ url_for('my_questionnaires') }}" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
     {% else %}
       <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    {% endif %}
+    {% if  session.username and session.role == 'admin'%}
+      <a class="nav-link" href="{{ url_for('create_student') }}">➕ Δημιουργία Νέου Φοιτητή</a>
+      <a class="nav-link" href="{{ url_for('delete_student') }}">🗑️ Διαγραφή Φοιτητή</a>
     {% endif %}
   </nav>
 
@@ -47,16 +43,14 @@
 
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
           <a class="view-button" href="{{ url_for('edit_questionnaire_title', questionnaire_id=q.questionnaire_id) }}">Αλλαγή Τίτλου ➡</a>
-          <a href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
-          
-          
+          <a class="view-button" href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
+          <a class="view-button" href="{{url_for('view_answers', questionnaire_id=q.questionnaire_id)}}">Απαντήσεις ➡</a>
         </div>
       {% else %}
         <p>Δεν βρέθηκαν ερωτηματολόγια.</p>
       {% endfor %}
     </div>
   </div>
-
 </body>
 </html>
 

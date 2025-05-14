@@ -7,5 +7,5 @@ def hello():
     return 'Hello, World! sThis is a test route.'
 
 
-from app import routes , routes_user
+from app import routes , routes_user , routes_admin
 

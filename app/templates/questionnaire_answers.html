@@ -1,0 +1,19 @@
+<h2>📊 Στατιστικά Ερωτηματολογίου #{{ questionnaire_id }}</h2>
+<p>Σύνολο Απαντήσεων: {{ stats.total }}</p>
+<p>Απαντήσεις Φοιτητών: {{ stats.student_answers }}</p>
+<p>Απαντήσεις Χρηστών: {{ stats.user_answers }}</p>
+<p>Ποσοστό Χρηστών: {{ stats.user_percentage }}%</p>
+
+<h3>📝 Αναλυτικές Απαντήσεις</h3>
+<ul>
+  {% for a in stats.answers %}
+    <li>
+      <strong>{{ "Φοιτητής" if a.from_student else "Χρήστης" }}</strong> απάντησε:
+      <ul>
+        {% for ans in a.answers %}
+          <li>Ερώτηση {{ ans.question_num }} → <em>{{ ans.content }}</em></li>
+        {% endfor %}
+      </ul>
+    </li>
+  {% endfor %}
+</ul>

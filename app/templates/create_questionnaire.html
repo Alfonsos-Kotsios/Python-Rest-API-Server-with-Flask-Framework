@@ -2,34 +2,39 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Δημιουργία Ερωτηματολογίου</title>
- 
+  <title>UniQ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaires_create.css') }}">
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
 <body class="body">
-  <nav class="navbar">
-    <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
-    <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Ερωτηματολόγια</a>
+ <nav class="navbar">
+     <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+     <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+    {% if session.username %}
+      <span class="nav-user">👤 {{ session.username }}</span>
+      <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
+      <a class="nav-link" href="{{ url_for('change_password') }}">🔑Αλλαγή Κωδικού</a>
+      <a class="nav-link" href="{{ url_for('create_questionnaire') }}">🛠️ Κατασκευη Ερωτηματολογίου</a>
+      <a class="nav-link" href="{{ url_for('my_questionnaires') }}" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
+    {% else %}
+      <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+    {% endif %}
+    {% if  session.username and session.role == 'admin'%}
+      <a class="nav-link" href="{{ url_for('create_student') }}">➕ Δημιουργία Νέου Φοιτητή</a>
+      <a class="nav-link" href="{{ url_for('delete_student') }}">🗑️ Διαγραφή Φοιτητή</a>
+    {% endif %}
   </nav>
 
   <div class="container">
     <h1 class="questionnaire-title">📝 Δημιουργία Νέου Ερωτηματολογίου</h1>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for message in messages %}
-            <li class="flash-msg">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-
-
     {% if error %}
-      <p class="error">{{ error }}</p>
+      <p class="error-msg">{{ error }}</p>
+    {% elif success %}
+      <p class="success-msg">{{ success }}</p>
     {% endif %}
 
-    <form method="POST">
+    <form method="POST" class="form">
       <div class="question-block">
         <label for="title">Τίτλος:</label>
         <input type="text" name="title" required>
@@ -47,8 +52,8 @@
 
       <div id="questions-area"></div>
 
-      <button type="button" onclick="generateQuestions()">➕ Προσθήκη Ερωτήσεων</button>
-      <button type="submit">✅ Καταχώρηση</button>
+      <button type="button" class="add-question-btn" onclick="generateQuestions()">➕ Προσθήκη Ερωτήσεων</button>
+      <button type="submit" class="submit-btn">✅ Καταχώρηση</button>
     </form>
   </div>
 
