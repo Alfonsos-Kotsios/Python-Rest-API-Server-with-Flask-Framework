@@ -1,19 +1,56 @@
-<h2>📊 Στατιστικά Ερωτηματολογίου #{{ questionnaire_id }}</h2>
-<p>Σύνολο Απαντήσεων: {{ stats.total }}</p>
-<p>Απαντήσεις Φοιτητών: {{ stats.student_answers }}</p>
-<p>Απαντήσεις Χρηστών: {{ stats.user_answers }}</p>
-<p>Ποσοστό Χρηστών: {{ stats.user_percentage }}%</p>
 
-<h3>📝 Αναλυτικές Απαντήσεις</h3>
-<ul>
-  {% for a in stats.answers %}
-    <li>
-      <strong>{{ "Φοιτητής" if a.from_student else "Χρήστης" }}</strong> απάντησε:
-      <ul>
-        {% for ans in a.answers %}
-          <li>Ερώτηση {{ ans.question_num }} → <em>{{ ans.content }}</em></li>
-        {% endfor %}
-      </ul>
-    </li>
-  {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8">
+    <title>UniQ | Ερωτηματολόγια</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaire_stats.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+  </head>
+  <body class="body">
+
+      <nav class="navbar">
+        <a class="nav-link" href="{{ url_for('home') }}">🏠 Αρχική</a>
+        <a class="nav-link" href="{{ url_for('get_questionnaires') }}">📄 Προβολή Ερωτηματολογίων</a>
+        {% if session.username %}
+          <span class="nav-user">👤 {{ session.username }}</span>
+          <a class="nav-link" href="{{ url_for('logout') }}">🚪 Έξοδος</a>
+          <a class="nav-link" href="{{ url_for('change_password') }}">🔑Αλλαγή Κωδικού</a>
+          <a class="nav-link" href="{{ url_for('create_questionnaire') }}">🛠️ Κατασκευη Ερωτηματολογίου</a>
+          <a class="nav-link" href="{{ url_for('my_questionnaires') }}" >🔍 Προβολή Ερωτηματολογίων Φοιτητή</a>
+        {% else %}
+          <a class="nav-link" href="{{ url_for('login') }}">🔐 Είσοδος</a>
+        {% endif %}
+        {% if  session.username and session.role == 'admin'%}
+          <a class="nav-link" href="{{ url_for('create_student') }}">➕ Δημιουργία Νέου Φοιτητή</a>
+          <a class="nav-link" href="{{ url_for('delete_student') }}">🗑️ Διαγραφή Φοιτητή</a>
+        {% endif %}
+      </nav>
+
+      <div class="container">
+        <h2 class="stats-title">📊 Στατιστικά Ερωτηματολογίου #{{ questionnaire_id }}</h2>
+        <p class="stats-paragraph">Σύνολο Απαντήσεων: {{ stats.total }}</p>
+        <p class="stats-paragraph">Απαντήσεις Φοιτητών: {{ stats.student_answers }}</p>
+        <p class="stats-paragraph">Απαντήσεις Χρηστών: {{ stats.user_answers }}</p>
+        <p class="stats-paragraph">Ποσοστό Χρηστών: {{ stats.user_percentage }}%</p>
+
+        <div class="answers-section">
+          <h3 class="stats-title">📝 Αναλυτικές Απαντήσεις</h3>
+          {% for a in stats.answers %}
+            <div class="answer-block">
+              <strong>{{ "Φοιτητής" if a.from_student else "Χρήστης" }}</strong> απάντησε:
+              <ul>
+                {% for ans in a.answers %}
+                  <li>Ερώτηση {{ ans.question_num }} {{ans.description}} → <em>{{ ans.content }}</em></li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    
+  </body>
+</html>
+
+
+

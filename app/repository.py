@@ -38,6 +38,11 @@ class Repository:
         if students:
             return Student.from_dict(students)
         return None
+    def get_user_by_username(self, username: str) -> Optional[User]:
+        user_data = self.db["Users"].find_one({"username": username})
+        if user_data:
+            return User.from_dict(user_data)
+        return None
         
        
     

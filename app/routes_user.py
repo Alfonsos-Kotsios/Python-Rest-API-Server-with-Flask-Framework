@@ -63,7 +63,10 @@ def my_questionnaires():
         return redirect(url_for('login'))
     
     student = rep.get_student_by_username(session['username'])
-    
+
+    if session['role'] == "admin":
+       questionnaires = rep.get_questionnaires_by_student(0)
+       return render_template('my_questionnaires.html', questionnaires=questionnaires)
     if not student:
         flash("Student not found", "error")
         return redirect(url_for('home'))
@@ -104,6 +107,7 @@ def create_questionnaire():
         return redirect(url_for('login'))
 
     student = rep.get_student_by_username(session['username'])
+    user = rep.get_user_by_username(session['username'])
     error = None
     success = None
     
@@ -126,8 +130,13 @@ def create_questionnaire():
         questionnaire_id = rep.get_next_questionnaire_id()  # implement if needed
         url = f"localhost:5000/questionnaire/{questionnaire_id}"
 
+        if session.get("role") == "admin":
+            reg_number = 0
+        else:
+            reg_number = student.reg_number
+
         questionnaire = {
-            "student_id": student.reg_number,
+            "student_id": reg_number,
             "questionnaire_id": questionnaire_id,
             "title": title,
             "description": description,

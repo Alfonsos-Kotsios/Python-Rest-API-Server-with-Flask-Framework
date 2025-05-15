@@ -41,6 +41,16 @@ def search_questionnaires():
     sort_flag = sort in ["answer_count", "answer_count_desc"]
     descending = (sort == "answer_count")  # descending=True only if sort=answer_count
 
+    if min_answers:
+        
+        if int(min_answers) < 0 or int(max_answers) < 0:
+            return render_template("error.html", message="⚠ Ο αριθμός απαντήσεων δεν μπορεί να είναι αρνητικός."), 400
+    
+    if max_answers:
+        
+        if  int(max_answers) < 0:
+            return render_template("error.html", message="⚠ Ο αριθμός απαντήσεων δεν μπορεί να είναι αρνητικός."), 400
+
     results = rep.search_questionnaires(
         min_answers=min_answers,
         max_answers=max_answers,

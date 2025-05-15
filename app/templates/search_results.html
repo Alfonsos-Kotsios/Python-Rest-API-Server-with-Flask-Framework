@@ -62,13 +62,20 @@
         <div class="questionnaire-card">
           <h2 class="questionnaire-title">{{ q.title }}</h2>
           <p>{{ q.description }}</p>
-          {% for s in students if s.reg_number == q.student_id %}
-            <p><strong>Όνομα:</strong> {{ s.name }}</p>
-            <p><strong>Επώνυμο:</strong> {{ s.surname }}</p>
-            <p><strong>Τμήμα:</strong> {{ s.department }}</p>
-          {% endfor %}
+          {%if q.student_id == 0 %}
+            <p><strong>Δημιουργηθηκε απο:</strong> ADMIN </p>
+          {% else %}
+            {% for s in students if s.reg_number == q.student_id %}
+              <p><strong>Ονομα:</strong> {{ s.name }}</p>
+              <p><strong>Επώνυμο:</strong> {{ s.surname }}</p>
+              <p><strong>Τμήμα:</strong> {{ s.department }}</p>
+            {% endfor %}
+          {% endif %}
           <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
+          {% if session.role == 'admin' %}
+            <a class="view-button" href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
