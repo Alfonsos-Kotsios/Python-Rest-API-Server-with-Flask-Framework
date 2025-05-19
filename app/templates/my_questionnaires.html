@@ -43,8 +43,10 @@
 
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
           <a class="view-button" href="{{ url_for('edit_questionnaire_title', questionnaire_id=q.questionnaire_id) }}">Αλλαγή Τίτλου ➡</a>
-          <a class="view-button" href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
           <a class="view-button" href="{{url_for('view_answers', questionnaire_id=q.questionnaire_id)}}">Απαντήσεις ➡</a>
+          <form action="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}" method="post">
+                    <button class="view-button" type="submit" onclick="return confirm('Σίγουρα θες να διαγράψεις;')">🗑️ Διαγραφή</button>
+                </form> 
         </div>
       {% else %}
         <p>Δεν βρέθηκαν ερωτηματολόγια.</p>

@@ -1,0 +1,21 @@
+services:
+  mongodb:
+    image: mongo:8.0.5
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+
+  api:
+    build:
+      context: .
+    container_name: flask-api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+       - "SERVER_HOST=0.0.0.0"
+       - "MONGO_HOST=mongodb"
+       - "MONGO_DATABASE=ERGASIA"

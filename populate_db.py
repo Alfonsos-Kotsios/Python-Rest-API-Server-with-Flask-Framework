@@ -1,45 +1,47 @@
+# populate_db.py
+
 import pymongo
 import json
 import os
 
 from app.model.student import Student
-from app.model.answered_questionnaires import AnsweredQuestionnaire , Answer
-from app.model.questionnaires import Questionnaire, Question
+from app.model.answered_questionnaires import AnsweredQuestionnaire
+from app.model.questionnaires import Questionnaire
 from app.model.user import User
 
-def main():
+def populate_if_needed():
+    mongo_host = os.environ.get("MONGO_HOST", "localhost")
+    mongo_db_name = os.environ.get("MONGO_DATABASE", "ERGASIA")
 
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
-    
-    db = client.UniQ
+    client = pymongo.MongoClient(f"mongodb://{mongo_host}:27017/")
+    db = client[mongo_db_name]
 
-    with open(os.path.join("assets","students.json"), "r") as students_file:
+    # ✅ Skip population if Students already exist
+    if db["Students"].count_documents({}) > 0:
+        print("✅ Database already populated. Skipping.")
+        return
+
+    # Students
+    with open(os.path.join("assets", "students.json"), "r") as students_file:
         raw_students = json.load(students_file)
         students = [Student(**s) for s in raw_students]
-    db["Students"].delete_many({})
-    result = db["Students"].insert_many([s.to_dict() for s in students])
-    print(len(result.inserted_ids), "Students created")
+        db["Students"].insert_many([s.to_dict() for s in students])
+        print(len(students), "Students created")
 
-    with open(os.path.join("assets","answered_questionnaires.json"), "r") as answered_questionnaires_file:
-        answered_questionnaires:list[AnsweredQuestionnaire] = json.load(answered_questionnaires_file)
-    db["Answered_questionnaires"].delete_many({})
-    result = db["Answered_questionnaires"].insert_many(answered_questionnaires)
-    print(len(result.inserted_ids), "Answered_questionnaires created")
+    # Answered
+    with open(os.path.join("assets", "answered_questionnaires.json"), "r") as a_file:
+        answered_questionnaires = json.load(a_file)
+        db["Answered_questionnaires"].insert_many(answered_questionnaires)
+        print(len(answered_questionnaires), "Answered_questionnaires created")
 
-    with open(os.path.join("assets","questionnaires.json"), "r") as questionnaires_file:
-        questionnaires:list[Questionnaire] = json.load(questionnaires_file)
-    db["Questionnaires"].delete_many({})
-    result = db["Questionnaires"].insert_many(questionnaires)
-    print(len(result.inserted_ids), "Questionnaires created")
-    
+    # Questionnaires
+    with open(os.path.join("assets", "questionnaires.json"), "r") as q_file:
+        questionnaires = json.load(q_file)
+        db["Questionnaires"].insert_many(questionnaires)
+        print(len(questionnaires), "Questionnaires created")
 
-
+    # Users (students + admin)
     users = [User(s.username, s.password, "student").to_dict() for s in students]
     users.append(User("admin", "admin123", "admin").to_dict())
-    db["Users"].delete_many({})
     db["Users"].insert_many(users)
-    print(len(users), "users created (students + admin)")
-
-
-if __name__ == "__main__":
-    main()
+    print(len(users), "Users created (students + admin)")

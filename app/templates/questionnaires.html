@@ -61,7 +61,9 @@
           <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
           {% if session.role == 'admin' %}
-            <a class="view-button" href="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}">Διαγραφη</a>
+            <form action="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}" method="post">
+                    <button class="view-button" type="submit" onclick="return confirm('Σίγουρα θες να διαγράψεις;')">🗑️ Διαγραφή</button>
+                </form> 
           {% endif %}
         </div>
       {% else %}

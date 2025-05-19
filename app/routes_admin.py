@@ -4,14 +4,13 @@ from app import server
 from app.repository import Repository
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from pymongo import MongoClient
-from populate_db import main
+
 import uuid
 
 rep = Repository.instance()
 server.secret_key = 'a_random_key'  # Needed to use sessions
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client.UniQ
+
 
 
 @server.route("/admin/create_student", methods=["GET", "POST"])

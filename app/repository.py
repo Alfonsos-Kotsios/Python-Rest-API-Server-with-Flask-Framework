@@ -1,5 +1,5 @@
 import pymongo
-
+import os
 from typing import List, Optional
 from app.model.questionnaires import Questionnaire, Question
 from app.model.student import Student 
@@ -13,12 +13,13 @@ class Repository:
 
 
     @classmethod
-    def instance(cls):
-        
+    def instance(cls): 
         if cls._instance is None:
-            cls._instance = cls.__new__(cls)  # Create the object
-            client = pymongo.MongoClient("localhost", 27017)
-            cls._instance.db = client["UniQ"] 
+            cls._instance = cls.__new__(cls)
+            mongo_host = os.environ.get("MONGO_HOST", "localhost")
+            mongo_db_name = os.environ.get("MONGO_DATABASE", "ERGASIA")
+            client = pymongo.MongoClient(f"mongodb://{mongo_host}:27017/")
+            cls._instance.db = client[mongo_db_name]
         return cls._instance
 
 
@@ -118,11 +119,12 @@ class Repository:
         )
         return result.modified_count > 0
     
-    def delete_questionnaire_and_answers(self, questionnaire_id: int) -> bool:
-        self.db["AnsweredQuestionnaires"].delete_many({"questionnaire_id": int(questionnaire_id)})
-        result = self.db["Questionnaires"].delete_one({"questionnaire_id": int(questionnaire_id)})
-        return result.deleted_count > 0
+    def delete_questionnaire_and_answers(self, questionnaire_id: int) -> tuple[bool, int]:
+        q_deleted = self.db["Questionnaires"].delete_one({"questionnaire_id": questionnaire_id})
+        a_deleted = self.db["Answered_questionnaires"].delete_many({"questionnaire_id": questionnaire_id})
         
+        return (q_deleted.deleted_count == 1, a_deleted.deleted_count)
+            
     def create_questionnaire(self, questionnaire_data: dict) -> bool:
         try:
             self.db["Questionnaires"].insert_one(questionnaire_data)

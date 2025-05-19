@@ -4,12 +4,11 @@ from app import server
 from app.repository import Repository
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from pymongo import MongoClient
-from populate_db import main
+
 rep = Repository.instance()
 server.secret_key = 'a_random_key'  # Needed to use sessions
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client.UniQ
+
 
 
 @server.route('/login', methods=['GET', 'POST'])
@@ -152,15 +151,16 @@ def create_questionnaire():
 
     return render_template("create_questionnaire.html" , error=error, success=success)
 
-@server.route("/questionnaire/<questionnaire_id>/delete" )
+@server.route("/questionnaire/<int:questionnaire_id>/delete", methods=["POST"])
 def delete_questionnaire(questionnaire_id):
-    print("questionnaire_id", questionnaire_id)
-    
-    if rep.delete_questionnaire_and_answers(questionnaire_id):
-         return redirect(url_for("my_questionnaires"))
+    success, deleted_answers = rep.delete_questionnaire_and_answers(questionnaire_id)
+
+    if success:
+        print(f"✅ Ερωτηματολόγιο #{questionnaire_id} διαγράφηκε. {deleted_answers} απαντήσεις αφαιρέθηκαν.")
+        return redirect(url_for("my_questionnaires"))
     else:
-        
-        return "Error deleting questionnaire", 500
+        return render_template("error.html", message="⚠ Το ερωτηματολόγιο δεν βρέθηκε ή απέτυχε η διαγραφή."), 500
+
    
 @server.route("/questionnaire/<int:questionnaire_id>/answers")
 def view_answers(questionnaire_id):
