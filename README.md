@@ -199,8 +199,8 @@ Answer
 παρακάτω εντολές.
 
 ```bash
-git clone https://github.com/Alfonsos-Kotsios/UNIQ.git
-cd UNIQ
+git clone https://github.com/Alfonsos-Kotsios/YpoxreotikiErgasiaJun25_E21083_KWTSIOS_ALFONSOS.git
+cd YpoxreotikiErgasiaJun25_E21083_KWTSIOS_ALFONSOS
 docker compose up -d --build
 ```
 Αυτό:
