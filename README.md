@@ -189,4 +189,16 @@ Answer
   ]
 }
 ```
+## 🚀 Εκκίνηση Συστήματος
 
+Για να εκκινήσετε το σύστημα δημηουργήστε έναν φάκελο και στην συνέχεια στο cmd του φακέλου ακολουθήστε τις 
+παρακάτω εντολές.
+
+```bash
+git clone https://github.com/Alfonsos-Kotsios/UNIQ.git
+cd UNIQ
+docker compose up -d --build
+```
+Αυτό:
+- Φορτώνει MongoDB και Flask API server.
+- Εκτελεί `populate_db.py` ΜΟΝΟ αν η βάση δεν έχει δεδομένα.
