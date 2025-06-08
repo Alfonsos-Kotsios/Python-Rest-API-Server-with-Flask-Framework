@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="el">
   <head>
@@ -28,12 +27,14 @@
       </nav>
 
       <div class="container">
+        <!-- Εμφάνιση τίτλου και συνοπτικών στατιστικών για το ερωτηματολόγιο -->
         <h2 class="stats-title">📊 Στατιστικά Ερωτηματολογίου #{{ questionnaire_id }}</h2>
         <p class="stats-paragraph">Σύνολο Απαντήσεων: {{ stats.total }}</p>
         <p class="stats-paragraph">Απαντήσεις Φοιτητών: {{ stats.student_answers }}</p>
         <p class="stats-paragraph">Απαντήσεις Χρηστών: {{ stats.user_answers }}</p>
         <p class="stats-paragraph">Ποσοστό Χρηστών: {{ stats.user_percentage }}%</p>
 
+        <!-- Αναλυτική λίστα με όλες τις απαντήσεις του ερωτηματολογίου -->
         <div class="answers-section">
           <h3 class="stats-title">📝 Αναλυτικές Απαντήσεις</h3>
           {% for a in stats.answers %}

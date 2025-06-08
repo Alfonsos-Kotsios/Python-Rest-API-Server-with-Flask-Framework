@@ -1,5 +1,3 @@
-# app/models/questionnaire.py
-
 from typing import List
 import uuid
 
@@ -11,6 +9,7 @@ class Question:
         self.question_num = question_num
 
     def to_dict(self):
+        # Επιστρέφει την ερώτηση ως dictionary
         return {
             "type": self.type,
             "description": self.description,
@@ -19,6 +18,7 @@ class Question:
 
     @staticmethod
     def from_dict(data):
+        # Δημιουργεί αντικείμενο Question από dictionary
         return Question(
             type=data["type"],
             description=data["description"],
@@ -40,6 +40,7 @@ class Questionnaire:
         self.questions = questions
 
     def to_dict(self):
+        # Επιστρέφει το ερωτηματολόγιο ως dictionary
         return {
             "id": self.id,
             "student_id": self.student_id,
@@ -53,6 +54,7 @@ class Questionnaire:
 
     @staticmethod
     def from_dict(data):
+        # Δημιουργεί αντικείμενο Questionnaire από dictionary
         questions = [Question.from_dict(q) for q in data.get("questions", [])]
         return Questionnaire(
             student_id=data["student_id"],

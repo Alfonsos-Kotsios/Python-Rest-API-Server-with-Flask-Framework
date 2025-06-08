@@ -27,12 +27,14 @@
   </nav>
 
   <div class="questionnaire-container">
+    <!-- Πληροφορίες για το ερωτηματολόγιο -->
     <h1 class="title">{{ questionnaire.title }}</h1>
     <p><strong>Περιγραφή:</strong> {{ questionnaire.description }}</p>
     <p><strong>ID:</strong> {{ questionnaire.questionnaire_id }}</p>
     <p><strong>Δημιουργός:</strong> {{ questionnaire.student_name }}</p>
     <p><strong>Απαντήσεις:</strong> {{ questionnaire.answer_count }}</p>
 
+    <!-- Φόρμα απάντησης στις ερωτήσεις του ερωτηματολογίου -->
     <form method="POST" action="{{ url_for('submit_questionnaire', questionnaire_id=questionnaire.questionnaire_id) }}" class="questionnaire-form">
       {% for question in questionnaire.questions %}
         <div class="question-block">

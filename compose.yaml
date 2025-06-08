@@ -1,21 +1,25 @@
-services:
-  mongodb:
-    image: mongo:8.0.5
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./data:/data/db
+# Docker Compose αρχείο για εκκίνηση της βάσης MongoDB και του Flask API
 
+services:
+  # Υπηρεσία MongoDB (βάση δεδομένων)
+  mongodb:
+    image: mongo:8.0.5                # Χρησιμοποιεί το επίσημο image της MongoDB (έκδοση 8.0.5)
+    container_name: mongodb           # Όνομα container για εύκολη αναφορά
+    ports:
+      - "27017:27017"                 # Κάνει map το port 27017 του host στο 27017 του container (default MongoDB port)
+    volumes:
+      - ./data:/data/db               # Αποθηκεύει τα δεδομένα της MongoDB τοπικά στον φάκελο ./data (persistent storage)
+
+  # Υπηρεσία Flask API (backend εφαρμογής)
   api:
     build:
-      context: .
-    container_name: flask-api
+      context: .                      # Χτίζει το image από το Dockerfile στον τρέχοντα φάκελο
+    container_name: flask-api         # Όνομα container για το Flask API
     ports:
-      - "5000:5000"
+      - "5000:5000"                   # Κάνει map το port 5000 του host στο 5000 του container (default Flask port)
     depends_on:
-      - mongodb
+      - mongodb                       # Εκκινεί το api μόνο αφού είναι έτοιμο το mongodb
     environment:
-       - "SERVER_HOST=0.0.0.0"
-       - "MONGO_HOST=mongodb"
-       - "MONGO_DATABASE=ERGASIA"
+       - "SERVER_HOST=0.0.0.0"        # Ορίζει το host του Flask server (απαραίτητο για container)
+       - "MONGO_HOST=mongodb"         # Ορίζει το hostname της MongoDB (όνομα του service)
+       - "MONGO_DATABASE=ERGASIA"     # Ορίζει το όνομα της βάσης δεδομένων που θα χρησιμοποιηθεί

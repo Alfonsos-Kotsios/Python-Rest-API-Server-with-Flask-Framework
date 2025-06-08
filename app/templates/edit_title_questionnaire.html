@@ -29,15 +29,14 @@
   <div class="container">
     <h1 class="questionnaire-title">Αλλαγή Τίτλου Ερωτηματολογίου</h1>
 
+    <!-- Εμφάνιση μηνυμάτων σφάλματος ή επιτυχίας -->
     {% if error %}
       <p style="color:red;">{{ error }}</p>
     {% elif success %}
       <p style="color:green;">{{ success }}</p>
     {% endif %}
 
-
-   
-
+    <!-- Φόρμα αλλαγής τίτλου ερωτηματολογίου -->
     <form method="POST" action="{{ url_for('edit_questionnaire_title', questionnaire_id=questionnaire_id) }}">
       <div class="question-block">
         <label for="new_title">Νέος Τίτλος:</label>

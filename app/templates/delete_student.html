@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,12 +28,14 @@
   <div class="container">
     <h2>🗑️ Διαγραφή Φοιτητή</h2>
 
+    <!-- Εμφάνιση μηνυμάτων σφάλματος ή επιτυχίας -->
     {% if error %}
       <p style="color:red;">{{ error }}</p>
     {% elif success %}
       <p style="color:green;">{{ success }}</p>
     {% endif %}
 
+    <!-- Φόρμα διαγραφής φοιτητή με αριθμό μητρώου -->
     <form method="POST"  class="form">
       <div class="student-block">
         <label>Αριθμός Μητρώου:</label>

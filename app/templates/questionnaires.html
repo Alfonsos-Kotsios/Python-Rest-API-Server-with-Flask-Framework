@@ -29,12 +29,14 @@
   <div class="container">
     <h1 class="heading">Διαθέσιμα Ερωτηματολόγια</h1>
 
+    <!-- Επιλογές ταξινόμησης με βάση το πλήθος απαντήσεων -->
     <div class="sort-section">
       <p>Ταξινόμηση με βάση το πλήθος απαντήσεων:</p>
       <a class="sort-link" href="{{ url_for('get_questionnaires', sort='answer_count') }}">⬇️ Φθίνουσα</a>
       <a class="sort-link" href="{{ url_for('get_questionnaires', sort='answer_count_desc') }}"> ⬆️ Αύξουσα</a>
     </div>
 
+    <!-- Φόρμα αναζήτησης ερωτηματολογίων με φίλτρα -->
     <form class="search-form" method="get" action="{{ url_for('search_questionnaires') }}">
       <input type="text" name="title" placeholder="Τίτλος" value="{{ request.args.get('title', '') }}">
       <input type="number" name="min_answers" placeholder="Ελάχιστες Απαντήσεις" value="{{ request.args.get('min_answers', '') }}">
@@ -44,6 +46,7 @@
       <button type="submit">🔍 Αναζήτηση</button>
     </form>
 
+    <!-- Λίστα με όλα τα διαθέσιμα ερωτηματολόγια -->
     <div class="questionnaire-list">
       {% for q in questionnaires %}
         <div class="questionnaire-card">
@@ -61,12 +64,14 @@
           <p><strong>Απαντήσεις:</strong> {{ q.answer_count }}</p>
           <a class="view-button" href="{{ url_for('view_questionnaire', questionnaire_id=q.questionnaire_id) }}">Προβολή ➡</a>
           {% if session.role == 'admin' %}
+            <!-- Επιλογή διαγραφής ερωτηματολογίου για admin -->
             <form action="{{url_for('delete_questionnaire', questionnaire_id=q.questionnaire_id)}}" method="post">
                     <button class="view-button" type="submit" onclick="return confirm('Σίγουρα θες να διαγράψεις;')">🗑️ Διαγραφή</button>
                 </form> 
           {% endif %}
         </div>
       {% else %}
+        <!-- Μήνυμα αν δεν υπάρχουν διαθέσιμα ερωτηματολόγια -->
         <p>Δεν βρέθηκαν ερωτηματολόγια.</p>
       {% endfor %}
     </div>

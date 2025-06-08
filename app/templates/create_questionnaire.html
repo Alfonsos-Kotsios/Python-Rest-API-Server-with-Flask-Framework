@@ -28,12 +28,14 @@
   <div class="container">
     <h1 class="questionnaire-title">📝 Δημιουργία Νέου Ερωτηματολογίου</h1>
 
+    <!-- Εμφάνιση μηνυμάτων σφάλματος ή επιτυχίας -->
     {% if error %}
       <p class="error-msg">{{ error }}</p>
     {% elif success %}
       <p class="success-msg">{{ success }}</p>
     {% endif %}
 
+    <!-- Φόρμα δημιουργίας ερωτηματολογίου -->
     <form method="POST" class="form">
       <div class="question-block">
         <label for="title">Τίτλος:</label>
@@ -50,6 +52,7 @@
         <input type="number" name="num_questions" min="1" max="10" required>
       </div>
 
+      <!-- Εδώ θα εμφανίζονται δυναμικά τα πεδία των ερωτήσεων -->
       <div id="questions-area"></div>
 
       <button type="button" class="add-question-btn" onclick="generateQuestions()">➕ Προσθήκη Ερωτήσεων</button>
@@ -57,6 +60,7 @@
     </form>
   </div>
 
+  <!-- JavaScript για δυναμική δημιουργία πεδίων ερωτήσεων -->
   <script>
     function generateQuestions() {
       const count = parseInt(document.querySelector('[name="num_questions"]').value || 0);
